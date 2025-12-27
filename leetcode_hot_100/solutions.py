@@ -154,3 +154,17 @@ def rob(nums: List[int]) -> int:
         dp[i] = max(dp[i-1], dp[i-2] + nums[i])
     return dp[-1]
 
+# leetcode 238 除自身以外数组的乘积 
+# 给你一个整数数组 nums，返回 数组 answer ，其中 answer[i] 等于 nums 中除 nums[i] 之外其余各元素的乘积 。
+def productExceptSelf(nums: List[int]) -> List[int]:
+    n = len(nums)
+    answer = [1]*n
+    # 计算左侧乘积
+    for i in range(1, n):
+        answer[i] = answer[i-1] * nums[i-1]
+    # 计算右侧乘积并与左侧乘积相乘
+    suffix_product = 1
+    for i in range(n-1, -1, -1):
+        answer[i] *= suffix_product
+        suffix_product *= nums[i]
+    return answer    
