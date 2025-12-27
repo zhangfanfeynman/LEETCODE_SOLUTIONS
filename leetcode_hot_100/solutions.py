@@ -168,3 +168,24 @@ def productExceptSelf(nums: List[int]) -> List[int]:
         answer[i] *= suffix_product
         suffix_product *= nums[i]
     return answer    
+
+
+# leetcode 152 乘积最大子数组
+# 给你一个整数数组 nums ，请你找出数组中乘积最大的非空连续 子数组（该子数组中至少包含一个数字），并返回该子数组所对应的乘积。示例 1:
+
+# 输入: nums = [2,3,-2,4]
+# 输出: 6
+# 解释: 子数组 [2,3] 有最大乘积 6。
+
+def maxProduct(nums: List[int])->int:
+    if not nums:
+        return 0
+    n = len(nums)
+    max_prod = min_prod = result = nums[0]
+    for i in range(1, n):
+        if nums[i] < 0:
+            max_prod, min_prod = min_prod, max_prod
+        max_prod = max(nums[i], max_prod * nums[i])
+        min_prod = min(nums[i], min_prod * nums[i])
+        result = max(max_prod, min_prod)
+    return result
