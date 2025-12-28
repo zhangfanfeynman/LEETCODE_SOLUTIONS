@@ -189,3 +189,95 @@ def maxProduct(nums: List[int])->int:
         min_prod = min(nums[i], min_prod * nums[i])
         result = max(max_prod, min_prod)
     return result
+
+# leetcode 148. 排序链表
+# 给你链表的头结点 head ，请将其按 升序 排列并返回 排序后的链表 。
+def sortList(head: Optional[ListNode]) -> Optional[ListNode]:
+    if not head or not head.next:
+        return head
+    # 找到中点
+    slow, fast = head, head.next
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+    mid = slow.next
+    slow.next = None
+
+    left = sortList(head)
+    right = sortList(mid)
+    # 合并两个有序链表
+    return merge(left, right)
+def merge(l1, l2):
+    dummy = ListNode(0)
+    tail = dummy
+    while l1 and l2:
+        if l1.val < l2.val:
+            tail.next = l1
+            l1 = l1.next
+        else:
+            tail.next = l2
+            l2 = l2.next
+        tail = tail.next
+    tail.next = l1 if l1 else l2
+    return dummy.next
+
+# leetcode 139: 单词拆分：给你一个字符串 s 和一个字符串列表 wordDict 作为字典。如果可以利用字典中出现的一个或多个单词拼接出 s 则返回 true。
+# 注意：不要求字典中出现的单词全部都使用，并且字典中的单词可以重复使用。
+
+# 你可以使用动态规划来解决这个问题。帮我生成一下动态规划的思路：
+# 1. 定义一个布尔数组 dp，其中 dp[i] 表示字符串 s 的前 i 个字符是否可以被拆分成字典中的单词。
+# 2. 初始化 dp[0] 为 True，因为空字符串可以被拆分。
+# 3. 遍历字符串 s，对于每个位置 i，检查所有可能的前缀 s[j:i] 是否在字典中，并且 dp[j] 为 True。
+# 4. 如果找到这样的 j，则 dp[i] 为 True。
+# 5. 最后返回 dp[len(s)] 的值。
+def workBreak(s:str, wordDict:List[str])->bool:
+    word_set = set(wordDict)
+    n = len(s)
+    dp = [False]*(n+1)
+    dp[0] = True
+    for i in range(1, n+1):
+        for j in range(i):
+            if dp[j] and s[j:i] in word_set:
+                dp[i] = True
+                break
+    return dp[n]
+
+# leetcode 647: 回文子串：
+# 回文字符串 是正着读和倒过来读一样的字符串。
+
+def countSubstrings(s:str)->int:
+    n = len(s)
+    count = 0
+    for i in range(n):
+        left, right = i,i
+        while left>=0 and right<n and s[left]==s[right]:
+            count +=1
+            left -=1
+            right +=1
+        left, right = i, i+1
+        while left>=0 and right<n and s[left]==s[right]:
+            count +=1
+            left -=1
+            right +=1
+    return count
+
+# leetcode 128, 最长连续序列
+# 给定一个未排序的整数数组 nums ，找出数字连续的最长序列的长度。
+def longestConsecutive(nums: List[int])->int:
+    if not nums:
+        return 0
+    nums.sort()
+    max_length = current_length = 1
+    for i in range(1, len(nums)):
+        if nums[i] == nums[i-1] +1:
+            current_length +=1
+            max_length = max(max_length, current_length)
+        elif nums[i] == nums[i-1]:
+            continue
+        else:
+            current_length = 1
+    return max_length
+
+
+
+
