@@ -278,6 +278,57 @@ def longestConsecutive(nums: List[int])->int:
             current_length = 1
     return max_length
 
+# leetcode 322 零钱兑换
+# 给你一个整数数组 coins ，表示不同面额的硬币；以及一个整数 amount ，表示总金额。
 
+# 计算并返回可以凑成总金额所需的 最少的硬币个数 。如果没有任何一种硬币组合能组成总金额，返回 -1 。
+def coinChange(coins:List[int], amount:int)->int:
+    dp = [float('inf')] * (amount+1)
+    dp[0] = 0
+    for i in range(1, amount+1):
+        for coin in coins:
+            if coin <= i:
+                dp[i] = min(dp[i], dp[i-coin]+1)
+    return dp[amount] if dp[amount]!= float('inf') else -1
 
+# leetcode 494 目标和
+# 给你一个非负整数数组 nums 和一个整数 target 。
+
+# 向数组中的每个整数前添加 '+' 或 '-' ，然后串联起所有整数，可以构造一个 表达式 ：
+
+# 例如，nums = [2, 1] ，可以在 2 之前添加 '+' ，在 1 之前添加 '-' ，然后串联起来得到表达式 "+2-1" 。
+# 返回可以通过上述方法构造的、运算结果等于 target 的不同 表达式 的数目。
+
+# 将添加 + 的数字分为一组（和为 S_plus），添加 - 的数字分为另一组（和为 S_minus）。
+
+# 则有 S_plus - S_minus = target。
+
+# 又因为 S_plus + S_minus = sum(nums)，可以解得 S_plus = (target + sum(nums)) / 2。
+
+def fingTargetSumWays(nums:List[int], target:int)->int:
+    total = sum(nums)
+    if (target+total)%2 != 0 or total<target:
+        return 0
+    s_plus = (target+total)//2 
+    dp = [0]*(s_plus + 1)
+    dp[0] = 1
+    for num in nums:
+        for j in range(s_plus, num - 1, -1):
+            dp[j] += dp[j-num]
+    return dp[s_plus]
+
+# leetcode 448 找到数组中消失的数字:
+# 给你一个含 n 个整数的数组 nums ，其中 nums[i] 在区间 [1, n] 内。
+# 请你找出所有在 [1, n] 范围内但没有出现在 nums 中的数字，并以数组的形式返回结果。
+def findMissingNumbers(nums:List[int])->List[int]:
+    n = len(nums)
+    for num in nums:
+        idx = abs(num) - 1
+        if nums[idx]>0:
+            nums[idx] = nums[idx]*-1
+    missing_numbers = []
+    for i in range(n):
+        if nums[i]>0:
+            missing_numbers.append(i+1)
+    return missing_numbers
 
