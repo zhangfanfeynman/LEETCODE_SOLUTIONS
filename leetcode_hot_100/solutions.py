@@ -332,3 +332,77 @@ def findMissingNumbers(nums:List[int])->List[int]:
             missing_numbers.append(i+1)
     return missing_numbers
 
+# leetcode 438 找到字符串中所有字母异位词
+# 给定两个字符串 s 和 p，找到 s 中所有 p 的 异位词 的子串，返回这些子串的起始索引。不考虑答案输出的顺序。
+
+# 示例 1:
+
+# 输入: s = "cbaebabacd", p = "abc"
+# 输出: [0,6]
+# 解释:
+# 起始索引等于 0 的子串是 "cba", 它是 "abc" 的异位词。
+# 起始索引等于 6 的子串是 "bac", 它是 "abc" 的异位词。
+# 示例 2:
+
+# 输入: s = "abab", p = "ab"
+# 输出: [0,1,2]
+# 解释:
+# 起始索引等于 0 的子串是 "ab", 它是 "ab" 的异位词。
+# 起始索引等于 1 的子串是 "ba", 它是 "ab" 的异位词。
+# 起始索引等于 2 的子串是 "ab", 它是 "ab" 的异位词。
+
+from collections import defaultdict
+def findAnagrams(s:str, p:str)->List[int]:
+    p_count = defaultdict(int)
+    s_count = defaultdict(int)
+    for i in range(len(p)):
+        p_count[p[i]] +=1
+        s_count[s[i]] +=1
+    result = []
+    if s_count == p_count:
+        result.append(0)
+    for i in range(len(p), len(s)):
+        s_count[s[i]] +=1
+        s_count[s[i-len(p)]] -=1
+        if s_count[s[i-len(p)]] == 0:
+            del s_count[s[i-len(p)]]
+        if s_count == p_count:
+            result.append(i - len(p) +1)
+    return result
+
+
+# leetcode 437 路径总和II
+# 给定一个二叉树的根节点 root ，和一个整数 targetSum ，求该二叉树里节点值之和等于 targetSum 的 路径 的数目。
+# 前缀和概念：
+
+# 前缀和是指从根节点到当前节点的路径上的所有节点值的和。
+
+# 如果我们有前缀和 prefix_sum，那么对于当前节点，我们想知道是否存在一个之前的前缀和 prefix_sum - targetSum，这样从那个节点到当前节点的路径和就是 targetSum。
+
+# 步骤：
+
+# 使用一个哈希表 prefix_counts 来记录前缀和出现的次数。
+
+# 递归遍历树，计算从根到当前节点的前缀和 current_sum。
+
+# 检查 current_sum - targetSum 是否在 prefix_counts 中，如果在，说明存在路径满足条件。
+
+# 更新 prefix_counts，递归左右子树，回溯时恢复 prefix_counts（因为路径必须是向下的，不能跨子树）。
+
+
+def pathSum(root:TreeNode, targetsum:int)->int:
+    prefix_counts = defaultdict(int)
+    prefix_counts[0]=1
+    def dfs(node, current_sum):
+        if not node:
+            return 0
+        current_sum += node.val
+        count = prefix_counts[targetsum - current_sum]
+        prefix_counts[current_sum] +=1
+        count += dfs(node.left, current_sum)
+        count += dfs(node.right, current_sum)
+        prefix_counts[current_sum] -=1
+        if prefix_counts[current_sum] == 0:
+            del prefix_counts[current_sum]
+        return count
+    return dfs(root, 0)
