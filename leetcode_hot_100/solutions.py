@@ -452,4 +452,53 @@ def canPartition(nums:List[int])->bool:
                 dp[i][j] = dp[i-1][j] or dp[i-1][j - nums[i-1]] # 不选或者选
     return dp[n][target]
 
+# leetcode 406, 根据身高重建队列
+# 假设有打乱顺序的一群人站成一个队列。每个人由一个整数对 (h, k) 表示，
+# 其中 h 是这个人的身高，k 是排在这个人前面且身高大于或等于 h 的人数。
+# 编写一个算法来重建这个队列。
+def reconstructQueue(people:List[List[int]])->List[List[int]]:
+    people.sort(key=lambda x: (-x[0], x[1])) # 按照身高降序排序，身高相同按k升序排序
+    queue = []
+    for person in people:
+        queue.insert(person[1], person) # 将person插入到k位置
+    return queue
+
+# leetcode 394 字符串编码
+# 给定一个经过编码的字符串，返回它解码后的字符串。
+
+# 编码规则为: k[encoded_string]，表示其中方括号内部的 encoded_string 正好重复 k 次。注意 k 保证为正整数。
+def decodeString(s:str)->str:
+    stack = []
+    current_num = 0
+    current_str = ''
+    for char in s:
+        if char.isdigit():
+            current_num = current_num * 10 + int(char)
+        elif char == '[':
+            stack.append((current_str, current_num))
+            current_str = ''
+            current_num = 0
+        elif char == ']':
+            last_str, num = stack.pop()
+            current_str = last_str + num*current_str
+        else:
+            current_str += char
+    return current_str
+
+# leetcode 347, 前k个高频元素
+def topKFrequent(nums:List[int], k:int)->List[int]:
+    freq_map = defaultdict(int)
+    for num in nums:
+        freq_map[num] +=1
+    freq_buckets = [[] for _ in range(len(nums)+1)]
+    for num, freq in freq_map.items():
+        freq_buckets[freq].append(num)
+    result = []
+    for i in range(len(freq_buckets)-1, 0, -1):
+        for num in freq_buckets[i]:
+            result.append(num)
+            if len(result) == k:
+                return result
+    return result
+
 
