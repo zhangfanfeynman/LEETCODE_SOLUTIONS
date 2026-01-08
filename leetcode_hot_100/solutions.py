@@ -406,3 +406,50 @@ def pathSum(root:TreeNode, targetsum:int)->int:
             del prefix_counts[current_sum]
         return count
     return dfs(root, 0)
+
+# leetcode 416. 分割等和子集
+# 给你一个 只包含正整数 的 非空 数组 nums 。请你判断是否可以将这个数组分割成两个子集，使得两个子集的元素和相等。
+# 动态规划解法
+# 子集和问题可以使用动态规划（Dynamic Programming, DP）来解决。具体思路如下：
+
+# 计算总和：首先计算数组的总和 total。如果 total 是奇数，直接返回 false。否则，目标和 target = total / 2。
+
+# 初始化DP数组：创建一个布尔型的二维数组 dp，其中 dp[i][j] 表示从前 i 个元素中选取一些，其和是否可以为 j。
+
+# dp[0][0] = true：不选任何元素时，和为0。
+
+# dp[0][j] = false（对于 j > 0）：没有元素可选时，无法得到正的和。
+
+# 填充DP数组：
+
+# 对于每个元素 nums[i-1]（因为 i 从1开始），和每个可能的和 j：
+
+# 如果 j < nums[i-1]，则不能选择当前元素，dp[i][j] = dp[i-1][j]。
+
+# 否则，可以选择不选或选当前元素：
+
+# 不选：dp[i][j] = dp[i-1][j]
+
+# 选：dp[i][j] = dp[i-1][j - nums[i-1]]
+
+# 两者中有一个为 true 即可。
+
+# 返回结果：dp[n][target] 就是答案，其中 n 是数组的长度。
+
+def canPartition(nums:List[int])->bool:
+    total = sum(nums)
+    if total %2 !=0:
+        return False
+    target = total //2
+    n = len(nums)
+    dp = [[False]*(target+1) for _ in range(n+1)]
+    dp[0][0] = True
+    for i in range(1, n+1):
+        for j in range(target+1):
+            if j < nums[i-1]: # 不能选择当前元素
+                dp[i][j] = dp[i-1][j]
+            else:
+                dp[i][j] = dp[i-1][j] or dp[i-1][j - nums[i-1]] # 不选或者选
+    return dp[n][target]
+
+
