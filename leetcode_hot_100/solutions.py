@@ -500,5 +500,97 @@ def topKFrequent(nums:List[int], k:int)->List[int]:
             if len(result) == k:
                 return result
     return result
+# leetcode 337，打家劫舍III
+# 小偷又发现了一个新的可行窃的地区。这个地区只有一个入口，我们称之为 root 。
+
+# 除了 root 之外，每栋房子有且只有一个“父“房子与之相连。一番侦察之后，聪明的小偷意识到“这个地方的所有房屋的排列类似于一棵二叉树”。 
+# 如果 两个直接相连的房子在同一天晚上被打劫 ，房屋将自动报警。
+
+# 给定二叉树的 root 。返回 在不触动警报的情况下 ，小偷能够盗取的最高金额 。
+# 可以考虑用后序遍历，左右根
+def robTree(root: Optional[TreeNode]) -> int:
+    def helper(node):
+        if not node:
+            return (0, 0)
+        left = helper(node.left)
+        right = helper(node.right)
+        rob_current  = node.val + left[1]+right[1]
+        not_rob_current = max(left) + max(right)
+        return rob_current, not_rob_current
+    return max(helper(root))
+
+# leetcode 121. 买卖股票的最佳时机
+# 给定一个数组 prices ，它的第 i 个元素 prices[i] 表示一支给定股票第 i 天的价格。
+
+# 你只能选择 某一天 买入这只股票，并选择在 未来的某一个不同的日子 卖出该股票。设计一个算法来计算你所能获取的最大利润。
+
+# 返回你可以从这笔交易中获取的最大利润。如果你不能获取任何利润，返回 0 。
+def maxProfit(prices:List[int])->int:
+    if not prices:
+        return 0
+    min_price = prices[0]
+    max_profit = 0
+    for price in prices[1:]:
+        max_profit = max(max_profit, price - min_price)
+        if price < min_price: # 
+            min_price = price
+    return max_profit
+
+# leetcode 309. 买卖股票的最佳时机 含冷冻期
+# 给定一个整数数组prices，其中第 prices[i] 表示第 i 天的股票价格 。
+
+# 设计一个算法计算出最大利润。在满足以下约束条件下，你可以尽可能地完成更多的交易（多次买卖一支股票）:
+
+# 卖出股票后，你无法在第二天买入股票 (即冷冻期为 1 天)。
+# 注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
+
+# 这个问题是股票买卖问题的变种，加入了冷冻期的限制。我们需要在满足冷冻期条件下，通过多次买卖股票来获取最大利润。可以使用动态规划来解决，定义三种状态：
+
+# 持有股票：当天结束时持有股票的最大利润。
+
+# 不持有股票且处于冷冻期：当天卖出了股票，下一天不能买入。
+
+# 不持有股票且不处于冷冻期：当天没有进行任何操作，可以自由买入。
+def  maxProfitWithCooldown(prices:List[int])->int:
+    """
+    LeetCode 309: 含冷冻期的股票买卖的动态规划解法。
+
+    状态定义（表示当天结束时的最大收益）：
+    - hold: 持有股票的最大收益（当天结束）。
+    - not_hold_cooldown: 不持股且当天处于冷冻期（刚卖出）的最大收益。
+    - not_hold_no_cooldown: 不持股且当天不在冷冻期（可以买入）的最大收益。
+
+    转移逻辑（处理第 i 天的价格 prices[i]）：
+    - 持有状态可以保持（昨天就持有）或今天买入（昨天不持且无冷冻）：
+        hold = max(hold, not_hold_no_cooldown - prices[i])
+    - 不持且无冷冻可以来自昨天的不持且无冷冻（保持）或昨天处于冷冻期（冷却结束）：
+        not_hold_no_cooldown = max(not_hold_no_cooldown, not_hold_cooldown)
+    - 不持且处于冷冻期表示今天卖出，收益为昨天持有并在今天卖出：
+        not_hold_cooldown = prev_hold + prices[i]
+
+    最终答案是两种不持股状态的最大值（持有股票未变现不计）：
+        return max(not_hold_no_cooldown, not_hold_cooldown)
+
+    时间复杂度 O(n)，空间复杂度 O(1)。
+    """
+    if not prices:
+        return 0
+    n = len(prices)
+    # 初始化（第0天结束时的三种状态）
+    hold = -prices[0]                 # 第0天买入
+    not_hold_cooldown = 0            # 第0天不可能处于冷冻期
+    not_hold_no_cooldown = 0         # 第0天不持股且无冷冻
+
+    for i in range(1, n):
+        prev_hold = hold
+        # 今天持有：要么延续昨天持有，要么昨天无冷冻且今天买入
+        hold = max(hold, not_hold_no_cooldown - prices[i])
+        # 今天不持且无冷冻：来自昨天不持（无冷冻）或昨天处于冷冻期（冷却结束）
+        not_hold_no_cooldown = max(not_hold_no_cooldown, not_hold_cooldown)
+        # 今天不持且处于冷冻期：今天卖出（昨天持有并今日卖出）
+        not_hold_cooldown = prev_hold + prices[i]
+
+    # 返回两种不持股状态的最大值
+    return max(not_hold_no_cooldown, not_hold_cooldown)
 
 
