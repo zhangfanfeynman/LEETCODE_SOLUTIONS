@@ -594,3 +594,134 @@ def  maxProfitWithCooldown(prices:List[int])->int:
     return max(not_hold_no_cooldown, not_hold_cooldown)
 
 
+
+# leetcode 300. 最长递增子序列
+
+# 给你一个整数数组 nums ，找到其中最长严格递增子序列的长度。
+
+# 子序列 是由数组派生而来的序列，删除（或不删除）数组中的元素而不改变其余元素的顺序。例如，[3,6,2,7] 是数组 [0,3,1,6,2,2,7] 的子序列。
+
+# 为了更好地理解，让我们看几个例子：
+
+# 示例1：
+# 输入：nums = [10,9,2,5,3,7,101,18]
+# 输出：4
+# 解释：最长递增子序列是 [2,3,7,101]，因此长度为4。
+# 方法一：动态规划
+# 动态规划是解决这类“最优化”问题的常用方法。我们需要找到一个状态表示和状态转移方程。
+
+# 定义状态：
+
+# 令 dp[i] 表示以 nums[i] 结尾的最长严格递增子序列的长度。
+
+# 初始化：
+
+# 对于每个 i，dp[i] 至少为1，因为至少可以包含 nums[i] 自己。
+# 状态转移：
+
+# 对于每个 i，我们需要检查所有 j < i：
+
+# 如果 nums[j] < nums[i]，那么 nums[i] 可以接在 nums[j] 后面，形成一个新的递增子序列，长度为 dp[j] + 1。
+
+# 我们需要在所有满足 nums[j] < nums[i] 的 j 中，选择最大的 dp[j] + 1 作为 dp[i] 的值。
+
+def lengthOfLIS(nums:List[int])->int:
+    if not nums:
+        return 0
+    n = len(nums)
+    dp = [1]*n
+    for i in range(1, n):
+        for j in range(i):
+            if nums[j]<nums[i]:
+                dp[i] = max(dp[i], dp[j]+1)
+    return max(dp)
+
+### leetcode 287, 寻找重复数
+# 给定一个包含 n + 1 个整数的数组 nums ，其数字都在 [1, n] 范围内（包括 1 和 n），可知至少存在一个重复的整数。
+def findDuplicate(nums:List[int])->int:
+    if not nums:
+        return -1
+    res = [False]*len(nums)
+    for num in nums:
+        if not res[num]:
+            res[num] = True
+        else:
+            return num
+
+# leetcode 283. 移动零
+# # 给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。
+def moveZeros(nums:List[int])->None:
+    """
+    Do not return anything, modify nums in-place instead.
+    """
+    if not nums:
+        return 
+    slow, fast = 0, 0
+    for fast in range(len(nums)):
+        if nums[fast]!= 0 :
+            nums[slow], nums[fast] = nums[fast], nums[slow]
+            slow +=1
+    return
+
+# leetcode 279. 给你一个整数 n ，返回 和为 n 的完全平方数的最少数量 。
+
+# 这个问题可以看作是一个动态规划问题，因为：
+
+# 示例演示
+# 以 n = 12 为例：
+
+# 初始化 dp = [0, ∞, ∞, ..., ∞]（长度为 n+1）。
+
+# dp[0] = 0。
+
+# 计算 dp[1] 到 dp[12]：
+
+# i = 1：
+
+# j = 1（1*1 <= 1）：
+
+# dp[1] = min(∞, dp[0] + 1) = 1。
+
+# dp[1] = 1。
+
+# i = 2：
+
+# j = 1：
+
+# dp[2] = min(∞, dp[1] + 1) = 2。
+
+# dp[2] = 2（2 = 1 + 1）。
+
+# i = 3：
+
+# j = 1：
+
+# dp[3] = min(∞, dp[2] + 1) = 3。
+
+# dp[3] = 3（3 = 1 + 1 + 1）。
+
+# i = 4：
+
+# j = 1：
+
+# dp[4] = min(∞, dp[3] + 1) = 4。
+
+# j = 2：
+
+# dp[4] = min(4, dp[0] + 1) = 1。
+
+# dp[4] = 1（4 = 4）。
+
+# 继续计算直到 i = 12：
+
+def numSquares(n:int)->int:
+    dp = [float('inf')]*(n+1)
+    dp[0] = 0
+    for i in range(1, n+1):
+        j = 1
+        while j*j<=i:
+            dp[i] = min(dp[i], dp[i - j*j]+1)
+            j +=1
+    return dp[n]
+
+
