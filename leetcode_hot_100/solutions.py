@@ -724,4 +724,21 @@ def numSquares(n:int)->int:
             j +=1
     return dp[n]
 
+# leetcode 240. 搜索二维矩阵II
+# 编写一个高效的算法来搜索 m x n 矩阵 matrix 中的一个目标值 target 。该矩阵具有以下特性：
+# 每行的元素从左到右升序排列。
+# 每列的元素从上到下升序排列。
+def searchMatrix(matrix:List[List[int]], target:int)->bool:
+    if not matrix or not matrix[0]:
+        return False
+    rows,cols = len(matrix), len(matrix[0])
+    row, col = 0, cols-1
+    while row<rows and col>=0:
+        if matrix[row][col] == target:
+            return True
+        elif matrix[row][col] < target:
+            row +=1
+        else:
+            col -=1
+    return False    
 
