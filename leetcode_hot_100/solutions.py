@@ -794,3 +794,22 @@ def permute(nums:List[int])->List[List[int]]:
             current.pop()
     backtrack([], nums)
     return result
+
+# leetcode 42, 接雨水：
+# 给定 n 个非负整数表示每个宽度为 1 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。
+def trap(height:List[int])->int:
+    if not height:
+        return 0
+    left, right  = 0, len(height)-1
+    left_max, right_max = height[left], height[right]
+    water_trapped = 0
+    while left < right:
+        if left_max < right_max:
+            left += 1
+            left_max = max(left_max, height[left])
+            water_trapped += left_max - height[left]
+        else:
+            right -=1
+            right_max = max(right_max, height[right]])
+            water_trapped += right_max - height[i]
+    return water_trapped
