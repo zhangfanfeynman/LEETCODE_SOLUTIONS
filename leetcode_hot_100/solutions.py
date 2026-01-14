@@ -742,3 +742,42 @@ def searchMatrix(matrix:List[List[int]], target:int)->bool:
             col -=1
     return False    
 
+# leetcode 239 滑动窗口最大值
+# 给你一个整数数组 nums，有一个大小为 k 的滑动窗口从数组的最左侧移动到数组的最右侧。你只可以看到在滑动窗口内的 k 个数字。滑动窗口每次只向右移动一位。
+
+# 返回 滑动窗口中的最大值 。
+def maxSlidingWindow(nums:List[int], k:int)->List[int]:
+    if not nums:
+        return []
+    result = []
+    window = []
+    for i , num in enumerate(nums):
+        while window and window[0] <= i-k:
+            window.pop(0)
+        while window and nums[window[-1]] < num:
+            window.pop()
+        window.append(i)
+        if i >= k-1:
+            result.append(nums[window[0]])
+    return result
+
+# leetcode 22. 括号生成
+# 数字 n 代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且 有效的 括号组合。
+
+def generateParenthesis(n:int)->List[str]:
+    result = []
+    def backtrack(current, open_count, close_count):
+        if len(current) == 2*n:
+            result.append("".join(current))
+            return
+        if open_count < n:
+            current.append('(')
+            backtrack(current, open_count+1, close_count)
+            current.pop()
+        if close_count < n:
+            current.append(')')
+            backtrack(current, open_count, close_count+1)
+            current.pop()
+    backtrack([], 0, 0)
+    return result
+
