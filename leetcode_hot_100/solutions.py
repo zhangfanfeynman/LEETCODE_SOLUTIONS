@@ -780,4 +780,17 @@ def generateParenthesis(n:int)->List[str]:
             current.pop()
     backtrack([], 0, 0)
     return result
-
+# leetcode 46, 全排列
+# 给定一个 没有重复 数字的序列，返回其所有可能的全排列。
+def permute(nums:List[int])->List[List[int]]:
+    result = []
+    def backtrack(current, remaining):
+        if not remaining:
+            result.append(current[:])
+            return
+        for i in range(len(remaining)):
+            current.append(remaining[i])
+            backtrack(current, remaining[:i]+remaining[i+1:])
+            current.pop()
+    backtrack([], nums)
+    return result
