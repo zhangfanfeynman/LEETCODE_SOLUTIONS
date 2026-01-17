@@ -835,4 +835,51 @@ def combinationSum(candidates:List[int], target:int):
     backtrack(target, [], 0)
     return result
 
+# leetcode 543. 二叉树的直径
+# 给定一棵二叉树，你需要计算它的直径长度。
+# 一棵二叉树的直径长度是任意两个结点路径长度中的最长值。这条路径可能穿过也可能不穿过根结点。
+def diameterOfBinaryTree(root:Optional[TreeNode])->int:
+    diameter = 0
+    def depth(node):
+        if not node:
+            return 0
+        nonlocal diameter
+        left_depth = depth(node.left)
+        right_depth = depth(node.right)
+        diameter = max(diameter, left_depth + right_depth)
+        return max(left_depth, right_depth) + 1
+    depth(root)
+    return diameter
+
+# leetcode 34, 在排序数组中查找元素的第一个和最后一个位置
+# 给你一个按照 非递减顺序 排列的整数数组 nums，和一个目标值 target 。请你找出给定目标值在数组中的开始位置和结束位置。
+
+def searchRange(nums:List[int], target:int)->List[int]:
+    def findFirst():
+        left, right = 0, len(nums) -1
+        first_pos = -1
+        while left <= right:
+            mid = (left + right)//2
+            if nums[mid] == target:
+                first_pos = mid
+                right = mid-1
+            elif nums[mid] < target:
+                left = mid+1
+            else:
+                right = mid-1
+        return first_pos
+    def findLast():
+        left, right = 0, len(nums) -1
+        last_pos = -1
+        while left<= right:
+            mid = (left + right)//2
+            if nums[mid] == target:
+                last_pos = mid
+                left = mid+1
+            elif nums[mid]>target:
+                right = mid-1
+            else:
+                left = mid+1
+        return last_pos
+    return [findFirst(), findLast()]
 
