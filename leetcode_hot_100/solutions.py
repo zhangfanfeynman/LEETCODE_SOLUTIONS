@@ -883,3 +883,58 @@ def searchRange(nums:List[int], target:int)->List[int]:
         return last_pos
     return [findFirst(), findLast()]
 
+# leetcode 34, 搜索旋转排序数组
+# 整数数组 nums 按升序排列，数组中的值 互不相同 。
+
+# 在传递给函数之前，nums 在预先未知的某个下标 k（0 <= k < nums.length）上进行了 旋转，使数组变为 [nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]（下标 从 0 开始 计数）。例如， [0,1,2,4,5,6,7] 在下标 3 处经旋转后可能变为 [4,5,6,7,0,1,2] 。
+# 给你 旋转后 的数组 nums 和一个整数 target ，如果 nums 中存在这个目标值 target ，则返回它的下标，否则返回 -1 。
+
+def search(nums:List[int], target:int)->int:
+    left, right = 0, len(nums) -1
+    while left <= right:
+        mid = (left + right)//2
+        if nums[mid] == target:
+            return mid
+        if nums[left] < nums[mid]:
+            if nums[left] <= target < nums[mid]:
+                right = mid-1
+            else:
+                left = mid+1
+        else: # 右边有序
+            if nums[mid] < target <= nums[right]:
+                left = mid+1
+            else:
+                right = mid-1
+    return -1            
+
+# leetcode 31 下一个排列
+# 整数数组的一个 排列  就是将其所有成员以序列或线性顺序排列。
+# 例如，arr = [1,2,3] 的排列有：
+# [1,2,3]
+# [1,3,2]
+# [2,1,3]
+# [2,3,1]
+# [3,1,2]
+# [3,2,1]
+# 整数数组的下一个排列是指其整数的下一个字典序更大的排列。
+def nextPermutation(nums:List[int])->None:
+    """
+    Do not return anything, modify nums in-place instead.
+    """    
+    n = len(nums) -1
+    if n<1:
+        return
+    i = n-2
+    while i>=0 and nums[i]>=nums[i+1]:
+        i -=1
+    if i >=0:
+        j = n
+        while nums[j] <= nums[i]:
+            j -= 1
+        nums[i], nums[j] = nums[j], nums[i]
+    left, right = i+1, n
+    while left <right:
+        nums[left], nums[right] = nums[right], nums[left]
+        left +=1
+        right -=1
+    return
