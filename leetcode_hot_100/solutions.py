@@ -938,3 +938,71 @@ def nextPermutation(nums:List[int])->None:
         left +=1
         right -=1
     return
+
+# leetcode 23. 合并K个升序链表
+# 给你一个链表数组，每个链表都已经按升序排列。
+# 请你将所有链表合并到一个升序链表中，返回合并后的链表。
+# 考虑分治法
+def mergeKlists(lists:List[Optional[ListNode]])->Optional[ListNode]:
+    if not lists:
+        return None
+    def mergeTwoLists(l1, l2):
+        dummy = ListNode(0)
+        tail = dummy
+        while l1 and l2:
+            if l1.val < l2.val:
+                tail.next = l1
+                l1 = l1.next
+            else:
+                tail.next = l2
+                l2 = l2.next
+            tail = tail.next
+        tail.next = l1 if l1 else l2
+        return dummy.next
+    def mergeRange(lists):
+        if not lists:
+            return None
+        if len(lists) == 1:
+            return lists[0]
+        mid = len(lists)//2
+        left_merged = mergeRange(lists[:mid])
+        right_merged = mergeRange(lists[mid:])
+        return mergeTwoLists(left_merged, right_merged)
+
+    return mergeRange(lists)
+
+
+#leetcode 560. 和为k的子数组：
+
+# 给你一个整数数组 nums 和一个整数 k ，请你统计并返回 该数组中和为 k 的子数组的个数 。
+
+# 子数组是数组中元素的连续非空序列。
+
+# 前缀和结合哈希表的方法是解决此类问题的高效方法，因此我将选择这种方法进行详细讲解和实现。
+
+# 详细步骤
+# 前缀和：前缀和是指从数组起始位置到当前位置的所有元素的和。例如，前缀和 prefix[i] 表示 nums[0] + nums[1] + ... + nums[i-1]。
+
+# 哈希表：使用哈希表来存储前缀和及其出现的次数。这样可以在 O(1) 时间内查询到所需的前缀和。
+
+# 核心思想：对于任意一个子数组 nums[i..j]，其和可以表示为 prefix[j+1] - prefix[i]。我们希望这个差值等于 k，即 prefix[j+1] - prefix[i] = k。
+# 这可以转化为 prefix[i] = prefix[j+1] - k。因此，我们可以在遍历数组时，对于每个 prefix[j+1]，查找哈希表中 prefix[j+1] - k 出现的次数，
+# 这个次数即为以 j 结尾的和为 k 的子数组数量。
+
+def subarraySum(nums: List[int], k: int) -> int:
+    prefix_count = defaultdict(int)
+    prefix_count[0] = 1  # 初始前缀和为0出现1次
+    current_prefix = 0
+    count = 0
+
+    for num in nums:
+        current_prefix += num
+        # 查找是否有前缀和 等于 current_prefix - k
+        count += prefix_count[current_prefix - k]
+        # 更新当前前缀和的出现次数
+        prefix_count[current_prefix] += 1
+
+    return count
+
+
+
