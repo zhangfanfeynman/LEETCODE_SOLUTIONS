@@ -1004,5 +1004,39 @@ def subarraySum(nums: List[int], k: int) -> int:
 
     return count
 
+# leetcode 合并两个有序链表：
+# 将两个升序链表合并为一个新的 升序 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。
+def mergeTwoLists(lists1, lists2):
+    dummy = ListNode(0)
+    tail = dummy
+    while lists1 and lists2:
+        if lists1.val < lists2.val:
+            tail.next = lists1
+            lists1 = lists1.next
+        else:
+            tail.next = lists2
+            lists2 = lists2.next
+        tail = tail.next
+    tail.next = lists1 if lists1 else lists2
+    return tail.next
 
+# leetcode 20. 有效的括号：
+# 给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串 s ，判断字符串是否有效。
+# 有效字符串需满足：
+
+# 左括号必须用相同类型的右括号闭合。
+# 左括号必须以正确的顺序闭合。
+# 每个右括号都有一个对应的相同类型的左括号。
+
+def isvalid(s:str)->bool:
+    stack = []
+    mapping = {'}':'{', ']':'[', ')':'('}
+    for char in s:
+        if char in mapping:
+            top_element = stack.pop() if stack else '#'
+            if mapping[char] != top_element:
+                return False
+        else:
+            stack.append(char)
+    return not stack
 
