@@ -1040,3 +1040,21 @@ def isvalid(s:str)->bool:
             stack.append(char)
     return not stack
 
+# leetcode 19. 删除链表中倒数第N个节点：
+# 双指针方法，使用两个指针 fast 和 slow，初始时均指向虚拟头节点（避免处理头节点删除的特殊情况）。
+#先让 fast 向前移动 n 步。
+#然后同时移动 fast 和 slow，直到 fast 到达链表末尾。
+def removeNthFromEnd(head:ListNode)->ListNode:
+    if not head:
+        return None
+    dummy = ListNode(0)
+    dummy.next = head
+    fast = slow = dummy
+    for _ in range(n):
+        fast = fast.next
+    while fast.next:
+        fast = fast.next
+        slow = slow.next
+    slow.next = slow.next.next
+    return dummy.next
+
