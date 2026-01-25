@@ -8,7 +8,14 @@
 # 要找到数组中第 k 个最大的元素，可以使用快速选择算法（Quickselect），这是快速排序的变种，平均时间复杂度为 O(n)。快速选择的基本思想是选择一个枢轴元素（pivot），将数组分为两部分：一部分小于枢轴，另一部分大于枢轴。根据枢轴的位置与 k 的关系，决定继续在哪一部分进行查找。
 
 import random
-from typing import List
+from typing import List, Optional
+
+# TreeNode 类定义
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
 def findKthLargest(nums: List[int], k: int) -> int:
     def partition(left, right, pivot_index):
         pivot_value = nums[pivot_index]
@@ -1044,7 +1051,7 @@ def isvalid(s:str)->bool:
 # 双指针方法，使用两个指针 fast 和 slow，初始时均指向虚拟头节点（避免处理头节点删除的特殊情况）。
 #先让 fast 向前移动 n 步。
 #然后同时移动 fast 和 slow，直到 fast 到达链表末尾。
-def removeNthFromEnd(head:ListNode)->ListNode:
+def removeNthFromEnd(head:ListNode, n:int)->ListNode:
     if not head:
         return None
     dummy = ListNode(0)
@@ -1088,6 +1095,18 @@ def threeSum(nums:List[int])->List[List[int]]:
 
     return result
 
-
-
+# leetcode 11 盛最多水的容器
+# 给定一个长度为n的数组，height，有n条垂线，第i条线的两个端点分别为(i,0)和(i,height[i])。
+# 找出其中的两条线，使得它们与x轴共同构成的容器可以容纳最多的水。
+def maxArea(height:List[int])->int:
+    left, right= 0, len(height)-1
+    max_area = 0
+    while left < right:
+        current_area = min(height[left], height[right])*(right - left)
+        max_area = max(max_area, current_area)
+        if height[left] < height[right]:
+            left +=1
+        else:
+            right -=1
+    return max_area
 
