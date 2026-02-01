@@ -1110,3 +1110,44 @@ def maxArea(height:List[int])->int:
             right -=1
     return max_area
 
+# leetcode 5. 最长回文字串
+# 给你一个字符串 s，找到 s 中最长的 回文 子串。
+def longestPalindrome(s:str)->str:
+    if not s:
+        return ""
+    # 双指针方法
+    n = len(s)
+    start, end = 0, 0
+    max_length = 0
+    res = ""
+    for i in range(n):
+        left, right =i,i
+        while left>=0 and right < n and s[left] == s[right]:
+            if right - left + 1 >= max_length:
+                max_length = right - left + 1
+                res = s[left:right + 1]
+                left -=1 
+                right +=1
+        left, right = i, i+1
+        while left>=0 and right < n and s[left] == s[right]:
+            if right - left + 1 >= max_length:
+                max_length = right - left + 1
+                res = s[left:right + 1]
+            left -=1
+            right +=1
+    return res
+
+# leetcode 3. 无重复字符的最长子串
+# 给定一个字符串 s ，请你找出其中不含有重复字符的 最长子串 的长度。
+def lengthOfLongestSubstring(s:str)->int:
+    char_index_map = {}
+    left = 0
+    max_length = 0
+    for right in range(len(s)):
+        if s[right] in char_index_map and char_index_map[s[right]]>= left:
+            left = char_index_map[s[right]]+1
+        char_index_map[s[right]] = right
+        max_length = max(max_length, right - left + 1)
+    return max_length
+
+
