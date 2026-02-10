@@ -358,7 +358,7 @@ def findMissingNumbers(nums:List[int])->List[int]:
 # 起始索引等于 1 的子串是 "ba", 它是 "ab" 的异位词。
 # 起始索引等于 2 的子串是 "ab", 它是 "ab" 的异位词。
 
-from collections import defaultdict
+from collections import defaultdict, deque
 def findAnagrams(s:str, p:str)->List[int]:
     p_count = defaultdict(int)
     s_count = defaultdict(int)
@@ -1199,3 +1199,53 @@ def exist(board:List[List[str]], word:str)->bool:
             if dfs(i,j,0):
                 return True
     return False
+
+#### 114. 二叉树展开为链表
+# 给你二叉树的根结点 root ，请你将它展开为一个单链表：
+
+# 展开后的单链表应该同样使用 TreeNode ，其中 right 子指针指向链表中下一个结点，而左子指针始终为 null 。
+# 展开后的单链表应该与二叉树 先序遍历 顺序相同。
+
+def flatten(root:Optional[TreeNode])->None:
+    if not root:
+        return 
+    stack = [root]
+    prev = None
+    while stack:
+        current = stack.pop()
+        if prev:
+            prev.left = None
+            prev.right = current
+        if current.right:
+            stack.append(current.right)
+        if current.left:
+            stack.append(current.left)
+        prev = current
+    return
+
+# leetcode 104, 二叉树的最大深度
+def maxDepth(root:Optional[TreeNode])->int:
+    if not root:
+        return 0
+    left_depth = maxDepth(root.left)
+    right_depth = maxDepth(root.right)
+    return max(left_depth, right_depth)+1
+
+# leetcode 102, 二叉树的层序遍历
+def levelOrder(root:Optional[TreeNode])->List[List[int]]:
+    if not root:
+        return []
+    result = []
+    queue = deque([root])
+    while queue:
+        level_size = len(queue)
+        current_level = []
+        for _ in range(level_size):
+            node = queue.popleft()
+            current_level.append(node.val)
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+        result.append(current_level)
+    return result
