@@ -1437,6 +1437,45 @@ def minPathSum(grid:List[List[int]])->int:
     return dp[m-1][n-1]
 
 
+# leetcode 62. 不同路径
+# 一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为 “Start” ）。
+
+# 机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish” ）。
+
+# 问总共有多少条不同的路径？
+# 使用动态规划表 dp[i][j] 表示从 (0, 0) 到 (i, j) 的不同路径数。状态转移方程为：
+
+# dp[i][j] = dp[i-1][j] + dp[i][j-1]
+
+def uniquePaths(m:int, n:int)->int:
+    dp = [[0]*n for _ in range(m)]
+    for i in range(m):
+        dp[i][0] = 1
+    for j in range(n):
+        dp[0][j] = 1
+    for i in range(1, m):
+        for j in range(1, n):
+            dp[i][j] = dp[i-1][j] + dp[i][j-1]
+    return dp[m-1][n-1]
+
+
+# leetcode 58. 合并区间
+# 以数组 intervals 表示若干个区间的集合，其中单个区间为 intervals[i] = [starti, endi] 。请你合并所有重叠的区间，并返回 一个不重叠的区间数组，该数组需恰好覆盖输入中的所有区间 。
+
+def merge(intervals:List[List[int]])->List[List[int]]:
+    if not intervals:
+        return []
+    intervals.sort(key = lambda x: x[0])
+    merged = [intervals[0]]
+    for current in intervals[1:]:
+        last_merged = merged[-1]
+        if current[0]<=last_merged[1]:
+            last_merged[1] = max(last_merged[1], current[1])
+        else:
+            merged.append(current)
+    return merged
+
+                   
 
 
 
