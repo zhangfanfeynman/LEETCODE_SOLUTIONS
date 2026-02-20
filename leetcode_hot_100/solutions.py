@@ -1277,4 +1277,170 @@ def isValidBST(root:Optional[TreeNode])->bool:
         return (validate(node.left, low, node.val) and
                 validate(node.right, node.val, high))
     return validate(root, float('-inf'), float('inf'))
-        
+
+# leetcode 96. 不同的二叉搜索树
+# 给你一个整数 n ，求恰由 n 个节点组成且节点值从 1 到 n 互不相同的 二叉搜索树 有多少种？返回满足题意的二叉搜索树的种数。
+
+# 定义状态：设 G(n) 表示 n 个节点能构成的 BST 的数量。
+# 具体的递推公式：
+
+def numTrees(n:int)->int:
+    G = [0]*(n+1)
+    G[0], G[1] = 1, 1
+    for i in range(2, n+1):
+        for j in range(1, i+1):
+            G[i] += G[j-1]*G[i-j]
+    return G[n]
+
+# leetcode 94. 二叉树的中序遍历
+
+# 给定一个二叉树的根节点 root ，返回 它的 中序 遍历 。
+def inorderTraversal(root:Optional[TreeNode])->List[int]:
+    result = []
+    def inorder(node):
+        if node:
+            inorder(node.left)
+            result.append(node.val)
+            inorder(node.right)
+    inorder(root)
+    return result
+
+
+# leetcode 1. 两数之和
+# 给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 target 的那 整数，并返回它们的数组下标。
+
+def twoSum(nums:List[int], target:int)->List[int]:
+    hash_map = {}
+    for i, num in enumerate(nums):
+        completement = target - num
+        if completement in hash_map:
+            return [hash_map[completement], i]
+        hash_map[num] = i
+    return []   
+
+
+
+# leetcode 78. 子集
+# 给你一个整数数组 nums ，数组中的元素 互不相同 。返回该数组所有可能的子集（幂集）。
+
+def subsets(nums:List[int])->List[List[int]]:
+    result = []
+    def backtrack(start, path):
+        result.append(path[:])
+        for i in range(start, len(nums)):
+            path.append(nums[i])
+            backtrack(i+1, path)
+            path.pop()
+    backtrack(0, [])
+    return result
+
+# leetcode 76, 最小覆盖字串
+#  给你一个字符串 s 、一个字符串 t 。返回 s 中涵盖 t 所有字符的最小子串。如果 s 中不存在涵盖 t 所有字符的子串，则返回空字符串 "" 。
+
+def minWindow(s:str, t:str)->str:   
+    if not s or not t:
+        return ""
+    target_counts = defaultdict(int)
+    for char in t:
+        target_counts [char] +=1
+    required = len(target_counts)
+    formed = 0
+    window_counts = defaultdict(int)
+    left, right = 0, 0
+    min_len = float('inf')
+    result = ""
+    for right, char in enumerate(s):
+        window_counts[char] +=1
+        if char in target_counts and window_counts[char] == target_counts[char]:
+            formed +=1
+        while left <= right and formed == required:
+            if right - left +1 <min_len:
+                min_len = right - left +1
+                result = s[left:right +1]
+            left_char  = s[left]
+            if left_char in target_counts:
+                window_counts[left_char] -=1
+                if window_counts[left_char] < target_counts[left_char]:
+                    formed -=1
+            left +=1
+    return result
+
+
+# leetcode 72. 编辑距离
+# 给你两个单词 word1 和 word2， 请返回将 word1 转换成 word2 所使用的最少操作数 。
+
+# 你可以对一个单词进行如下三种操作：
+
+# 插入一个字符
+# 删除一个字符
+# 替换一个字符
+
+def minDistance(word1:str, word2:str)->int:
+    m, n = len(word1), len(word2)
+    dp = [[0]*(n+1) for _ in range(m+1)]
+    # dp[i][j] 表示将 word1 的前 i 个字符转换成 word2 的前 j 个字符所需的最少操作数
+    for i in range(m+1):
+        dp[i][0] = i
+    for j in range(n+1):
+        dp[0][j] = j
+    for i in range(1, m+1):
+        for j in range(1, n+1):
+            if word1[i-1] == word2[j-1]:
+                dp[i][j] = dp[i-1][j-1]
+            else:
+                dp[i][j] = min(dp[i-1][j]+1,   # 删除 word1[i-1]，然后 word1[0..i-2] 转换为 word2[0..j-1]
+                               dp[i][j-1]+1,   # 插入 word2[j-1]，然后 word1[0..i-1] 转换为 word2[0..j-2]
+                               dp[i-1][j-1]+1) # 替换 word1[i-1] 为 word2[j-1]，然后 word1[0..i-2] 转换为 word2[0..j-2]
+    return dp[m][n]
+
+
+# leetcode 581. 最短无序连续子数组
+# 给你一个整数数组 nums ，你需要找出一个 连续子数组 ，如果对这个子数组进行升序排序，那么整个数组都会变为升序排序。
+def findUnsortedSubarray(nums:List[int])->int:
+    max_seen = float('-inf')
+    min_seen = float('inf')         
+    left, right = -1, -1
+    for i in range(len(nums)):
+        if nums[i] >= max_seen:
+            max_seen = nums[i]
+        else:
+            right = i
+    for i in range(len(nums)-1, -1, -1):
+        if nums[i] <= min_seen:
+            min_seen = nums[i]
+        else:
+            left = i
+    return right - left + 1 if right != -1 else 0
+
+
+# leetcode 64. 最小路径和
+# 给定一个包含非负整数的 m x n 网格 grid ，请找出一条从左上角到右下角的路径，使得路径上的数字总和为最小。
+# 说明：每次只能向下或者向右移动一步。
+# 使用动态规划表 dp[i][j] 表示从 (0, 0) 到 (i, j) 的最小路径和。状态转移方程为：
+
+# dp[i][j] = grid[i][j] + min(dp[i-1][j], dp[i][j-1])
+
+
+def minPathSum(grid:List[List[int]])->int:
+    if not grid or not grid[0]:
+        return 0
+    m, n = len(grid), len(grid[0]) # m 表示行数，n 表示列数
+    dp = [[0]*n for _ in range(m)]
+    dp[0][0] = grid[0][0]
+    for i in range(m):
+        dp[i][0] = dp[i-1][0] + grid[i][0] if i > 0 else grid[0][0]
+    for j in range(n):
+        dp[0][j] = dp[0][j-1] + grid[0][j] if j>0 else grid[0][0]
+    for i in range(1, m):
+        for j in range(1, n):
+            dp[i][j] = grid[i][j] + min(dp[i-1][j], dp[i][j-1])
+    return dp[m-1][n-1]
+
+
+
+
+
+
+
+
+
