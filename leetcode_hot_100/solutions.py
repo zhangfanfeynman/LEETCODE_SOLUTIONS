@@ -1475,11 +1475,30 @@ def merge(intervals:List[List[int]])->List[List[int]]:
             merged.append(current)
     return merged
 
-                   
+# leetcode 55. 跳跃游戏
+# 给你一个非负整数数组 nums ，你最初位于数组的 第一个下标 。数组中的每个元素代表你在该位置可以跳跃的最大长度。
 
+# 判断你是否能够到达最后一个下标，如果可以，返回 true ；否则，返回 false 。
 
+# 维护一个变量 max_reach 表示当前能到达的最远位置，遍历数组时更新 max_reach。如果 max_reach 能覆盖最后一个下标，则返回 true。
 
+def canJump(nums:List[int])->bool:
+    if not nums:
+        return False
+    max_reach = 0
+    for i, jump in enumerate(nums):
+        if i>max_reach:
+            return False 
+        max_reach = max(max_reach, i+jump)
+    return True
 
-
+# leetcode 53. 最大子数组和
+def maxSubArray(nums:List[int])->int:
+    # max_current 表示以当前元素结尾的最大子数组和，global_max 表示全局最大子数组和
+    max_current = global_max = nums[0]
+    for num in nums[1:]:
+        max_current = max(num, max_current + num)
+        global_max = max(global_max, max_current)
+    return global_max
 
 
